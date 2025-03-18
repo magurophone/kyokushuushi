@@ -36,7 +36,8 @@ dependencies:
   animated_text_kit: ^4.2.2  # アニメーションテキスト用
   audioplayers: ^5.2.1  
   shared_preferences: ^2.2.0
-  google_mobile_ads: ^3.0.0  #
+  google_mobile_ads: ^3.0.0
+  in_app_purchase: ^3.1.13  # アプリ内課金用
 
 
 dev_dependencies:

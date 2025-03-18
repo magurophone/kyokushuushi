@@ -39,6 +39,9 @@
     
     <!-- インターネット権限の追加 -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Google Play課金許可 -->
+    <uses-permission android:name="com.android.vending.BILLING" />
     
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

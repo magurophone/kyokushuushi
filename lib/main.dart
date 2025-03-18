@@ -6,6 +6,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart'; // AdMobをインポ�
 import 'screens/splash_screen.dart';
 import 'services/settings_service.dart';
 import 'services/ad_service.dart'; // 新しいAdServiceをインポート
+import 'services/purchase_service.dart'; // 追加
 
 void main() async {
   // Flutter初期化を確実に行う
@@ -19,6 +20,9 @@ void main() async {
   
   // 設定サービスの初期化
   await SettingsService().init();
+  
+  // 課金サービスの初期化
+  await PurchaseService().init();
   
   // AdServiceのインスタンスを作成（Web環境では限定機能）
   AdService();

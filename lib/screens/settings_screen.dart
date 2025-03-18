@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../services/settings_service.dart';
 import '../screens/privacy_policy_screen.dart';
 import '../screens/terms_of_service_screen.dart';
+import 'purchase_screen.dart';
+import '../services/purchase_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -18,12 +20,32 @@ class SettingsScreenState extends State<SettingsScreen> {
   
   // 設定サービスのインスタンス
   final SettingsService _settingsService = SettingsService();
+  // 購入サービスのインスタンス
+  final PurchaseService _purchaseService = PurchaseService();
   
   @override
   void initState() {
     super.initState();
     // 将来的にはユーザー情報からリファラルコードを取得
     // _loadReferralData();
+    
+    // 状態を監視するリスナーを追加
+    _purchaseService.addStatusListener(_onPurchaseStatusChange);
+  }
+  
+  @override
+  void dispose() {
+    // リスナーを削除
+    _purchaseService.removeStatusListener(_onPurchaseStatusChange);
+    super.dispose();
+  }
+  
+  // 課金状態変更ハンドラ
+  void _onPurchaseStatusChange(PurchaseStatus status, String message) {
+    // UIを更新
+    if (mounted) {
+      setState(() {});
+    }
   }
   
   // 将来的な実装用のプレースホルダー
@@ -107,12 +129,38 @@ class SettingsScreenState extends State<SettingsScreen> {
               _buildSectionHeader('プレミアム'),
               const SizedBox(height: 8),
               _buildSettingItem(
-                icon: Icons.star,
-                title: 'プレミアムにアップグレード',
-                subtitle: '広告を非表示にして全機能にアクセス',
+                icon: _purchaseService.isPremium ? Icons.check_circle : Icons.star,
+                title: 'プレミアム機能',
+                subtitle: _purchaseService.isPremium 
+                    ? '広告は表示されません' 
+                    : '広告を非表示にして全機能にアクセス',
+                trailing: _purchaseService.isPremium 
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      )
+                    : Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                 onTap: () {
-                  // 将来的な課金画面への遷移
-                  _showComingSoonDialog('プレミアム機能');
+                  // プレミアム状態なら何もしない
+                  if (_purchaseService.isPremium) {
+                    return;
+                  }
+                  
+                  // 効果音を再生
+                  _settingsService.playSound('menu');
+                  
+                  // 課金画面に遷移
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PurchaseScreen()),
+                  ).then((_) {
+                    // 画面から戻ってきたらステートを更新
+                    setState(() {});
+                  });
                 },
               ),
               const Divider(),

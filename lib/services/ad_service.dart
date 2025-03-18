@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'premium_service.dart';
 
 class AdService {
   static final AdService _instance = AdService._internal();
@@ -27,25 +28,50 @@ class AdService {
   // 定期的な広告表示用タイマー
   Timer? _periodicAdTimer;
   
+  // プレミアムサービス
+  final PremiumService _premiumService = PremiumService();
+  
   // シングルトンパターン
   factory AdService() {
     return _instance;
   }
   
   AdService._internal() {
-    // Web環境では広告を初期化しない
-    if (!kIsWeb) {
-      // 初期化時に最初の広告をロード
-      _loadInterstitialAd();
+    // プレミアムサービスの初期化
+    _premiumService.init().then((_) {
+      // Web環境では広告を初期化しない
+      if (!kIsWeb) {
+        // プレミアムステータスを監視
+        _premiumService.addListener(_onPremiumStatusChanged);
+        
+        // 初期化時に最初の広告をロード（プレミアムでなければ）
+        if (!_premiumService.isPremium) {
+          _loadInterstitialAd();
+        }
+      } else {
+        print('Web環境では広告機能は無効です');
+      }
+    });
+  }
+  
+  // プレミアムステータス変更時のハンドラ
+  void _onPremiumStatusChanged(bool isPremium) {
+    if (isPremium) {
+      // プレミアムユーザーになった場合、広告を停止
+      stopPeriodicAds();
+      _interstitialAd?.dispose();
+      _interstitialAd = null;
+      _isInterstitialAdReady = false;
     } else {
-      print('Web環境では広告機能は無効です');
+      // プレミアムでなくなった場合、広告をロード
+      _loadInterstitialAd();
     }
   }
   
   // インタースティシャル広告のロード
   void _loadInterstitialAd() {
-    // Web環境では何もしない
-    if (kIsWeb) return;
+    // Web環境または プレミアムユーザーの場合は何もしない
+    if (kIsWeb || _premiumService.isPremium) return;
     
     InterstitialAd.load(
       adUnitId: interstitialAdUnitId,
@@ -84,9 +110,9 @@ class AdService {
   
   // 広告を表示するメソッド
   Future<bool> showInterstitialAd() async {
-    // Web環境では広告を表示しない
-    if (kIsWeb) {
-      print('Web環境では広告は表示されません');
+    // Web環境または プレミアムユーザーの場合は広告を表示しない
+    if (kIsWeb || _premiumService.isPremium) {
+      print('広告は表示されません：${kIsWeb ? "Web環境" : "プレミアムユーザー"}');
       return false;
     }
     
@@ -119,9 +145,9 @@ class AdService {
   
   // 定期的な広告表示を開始（初回も表示）
   void startPeriodicAds() {
-    // Web環境では何もしない
-    if (kIsWeb) {
-      print('Web環境では定期広告は表示されません');
+    // Web環境または プレミアムユーザーの場合は何もしない
+    if (kIsWeb || _premiumService.isPremium) {
+      print('広告は表示されません：${kIsWeb ? "Web環境" : "プレミアムユーザー"}');
       return;
     }
     
@@ -141,9 +167,6 @@ class AdService {
   
   // 定期的な広告表示を停止
   void stopPeriodicAds() {
-    // Web環境では何もしない
-    if (kIsWeb) return;
-    
     _periodicAdTimer?.cancel();
     _periodicAdTimer = null;
     print('定期的な広告表示を停止しました');
@@ -154,6 +177,7 @@ class AdService {
     // Web環境では何もしない
     if (kIsWeb) return;
     
+    _premiumService.removeListener(_onPremiumStatusChanged);
     _interstitialAd?.dispose();
     stopPeriodicAds();
   }
