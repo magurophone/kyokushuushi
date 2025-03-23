@@ -10,6 +10,7 @@ class PlayerDetailWidget extends StatelessWidget {
   final TextStyle valueStyle;
   final Function(String, {String area}) showExplanationDialog;
   final VoidCallback? onSettingsTap;
+  final VoidCallback? onHelpButtonTap; 
   final bool isDarkMode;
 
   const PlayerDetailWidget({
@@ -22,6 +23,7 @@ class PlayerDetailWidget extends StatelessWidget {
     required this.valueStyle,
     required this.showExplanationDialog,
     this.onSettingsTap,
+    this.onHelpButtonTap,
     required this.isDarkMode,
   }) : super(key: key);
 
@@ -151,40 +153,60 @@ class PlayerDetailWidget extends StatelessWidget {
                   topRight: Radius.circular(12),
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Stack(
                 children: [
-                  const SizedBox(width: 10), // 左側の余白
-                  Expanded(
-                    child: Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.person,
-                            size: headerStyle.fontSize,
+                  // 中央のタイトル
+                  Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.person,
+                          size: headerStyle.fontSize,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          '$selectedPlayer (${playerData['isParent'] ? '親' : '子'})',
+                          style: TextStyle(
+                            fontSize: headerStyle.fontSize,
+                            fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
-                          const SizedBox(width: 5),
-                          Text(
-                            '$selectedPlayer (${playerData['isParent'] ? '親' : '子'})',
-                            style: TextStyle(
-                              fontSize: headerStyle.fontSize,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,  // ヘッダーのテキストは白のまま
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                      size: 28,
+                  
+                  // 右側のボタン
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // ヘルプボタン
+                        if (onHelpButtonTap != null)
+                          IconButton(
+                            icon: Icon(
+                              Icons.help_outline,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                            onPressed: onHelpButtonTap,
+                          ),
+                        // 設定ボタン  
+                        IconButton(
+                          icon: Icon(
+                            Icons.settings,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                          onPressed: onSettingsTap,
+                        ),
+                      ],
                     ),
-                    onPressed: onSettingsTap,
                   ),
                 ],
               ),

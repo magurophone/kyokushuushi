@@ -9,6 +9,7 @@ import '../utils/custom_page_transition.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'settings_screen.dart';
 import '../services/ad_service.dart';
+import 'help_screen.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -262,31 +263,55 @@ class MenuScreenState extends State<MenuScreen> with SingleTickerProviderStateMi
               child: Column(
                 children: [
                   // 上部1/13 - 設定ボタン用エリア
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.settings,
-                          color: isDarkMode ? Colors.white70 : Colors.blue.shade700,
-                          size: 28,
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // ヘルプボタン
+                        IconButton(
+                          icon: Icon(
+                            Icons.help_outline,
+                            color: isDarkMode ? Colors.white70 : Colors.blue.shade700,
+                            size: 28,
+                          ),
+                          onPressed: () {
+                            // ヘルプサウンド再生
+                            SettingsService().playSound('helpon');
+                            
+                            // ヘルプ画面への遷移
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const HelpScreen()),
+                            );
+                          },
                         ),
-                        onPressed: () {
-                          // 設定サウンド再生
-                          SettingsService().playSound('setting');
-                          
-                          // 設定画面への遷移
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                          );
-                        },
-                      ),
+                        // 設定ボタン
+                        IconButton(
+                          icon: Icon(
+                            Icons.settings,
+                            color: isDarkMode ? Colors.white70 : Colors.blue.shade700,
+                            size: 28,
+                          ),
+                          onPressed: () {
+                            // 設定サウンド再生
+                            SettingsService().playSound('setting');
+                            
+                            // 設定画面への遷移
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
+                ),
                   
                   // 下部12/13 - メインコンテンツ
                   Expanded(

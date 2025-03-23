@@ -9,6 +9,7 @@ import '../services/settings_service.dart';
 import 'settings_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../services/ad_service.dart';
+import 'help_screen.dart';
 
 class FourPlayerScreen extends StatefulWidget {
   const FourPlayerScreen({super.key});
@@ -187,7 +188,7 @@ void dispose() {
                   // 上半分 - 選択プレイヤーの詳細表示
                   Expanded(
                     flex: 1,
-                    child: PlayerDetailWidget(
+                    child:PlayerDetailWidget( // PlayerDetailWidget の使用部分                 
                       playerData: _calculationManager.getPlayerDisplayData(selectedPlayer),
                       selectedPlayer: selectedPlayer,
                       headerStyle: headerStyle,
@@ -206,6 +207,16 @@ void dispose() {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                        );
+                      },
+                      onHelpButtonTap: () {
+                        // ヘルプ効果音を再生
+                        SettingsService().playSound('helpon');
+                        
+                        // ヘルプ画面に遷移
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HelpScreen()),
                         );
                       },
                     ),
@@ -247,7 +258,7 @@ void dispose() {
                                     },
                                   ),
                                 ),
-                                icon: Icon(Icons.restart_alt, size: getResponsiveFontSize(16)),
+                                icon: Icon(Icons.refresh, size: getResponsiveFontSize(16)),
                                 label: Text('全てリセット', style: buttonTextStyle),
                               ),
                             ),
