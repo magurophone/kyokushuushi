@@ -62,6 +62,7 @@ class PlayerRowWidget extends StatelessWidget {
           // プレイヤー名部分 - タップ可能
           InkWell(
             onTap: isJika ? null : onSelect,
+            enableFeedback: false,
             borderRadius: BorderRadius.circular(4),
             splashColor: Colors.blue.withOpacity(0.2),
             highlightColor: Colors.blue.withOpacity(0.1),
@@ -155,105 +156,81 @@ class PlayerRowWidget extends StatelessWidget {
           const SizedBox(width: 12),
           
           if (!isJika) ...[
-          // カウンターボタン
-          Expanded(
-            flex: 3,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                // 全体の画面幅を取得
-                final screenWidth = MediaQuery.of(context).size.width;
-                
-                // 画面サイズに応じて幅の係数を変える
-                // 大画面(600以上)なら80%、小画面なら100%
-                final widthFactor = screenWidth >= 600 ? 0.8 : 1.0;
-                
-                return Center(
-                  child: FractionallySizedBox(
-                    widthFactor: widthFactor,
-                    child: Container(
-                      height: 40 * fontRatio, // 高さを画面サイズに合わせて可変に
-                      // ボタンの外側にシャドウを追加するコンテナ
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: isDarkMode
-                              ? Colors.blue.withOpacity(0.3)
-                              : Colors.black.withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                            spreadRadius: 1,
-                          ),
-                        ],
-                      ),
-                      child: ElevatedButton.icon(
-                        onPressed: onIncrement,
-                        icon: Icon(Icons.add, size: buttonTextStyle.fontSize! + 1),
-                        label: Text('カウンター', style: buttonTextStyle),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(horizontal: 4 * fontRatio, vertical: 0),
-                          minimumSize: Size(30 * fontRatio, 30 * fontRatio),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          elevation: 4, // 標準的なエレベーション
-                          // グラデーション効果のための背景色
-                          backgroundColor: isDarkMode ? Colors.blue.shade600 : Color(0xFF1976D2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ).copyWith(
-                          overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                            (Set<WidgetState> states) {
-                              if (states.contains(WidgetState.pressed)) {
-                                return isDarkMode 
-                                  ? Colors.blue.shade800.withOpacity(0.3)
-                                  : Color(0xFF0D47A1).withOpacity(0.3); // タップ時の色
-                              }
-                              return null;
-                            },
-                          ),
-                          // テキストスタイルをカスタマイズ
-                          textStyle: WidgetStateProperty.resolveWith<TextStyle?>(
-                            (Set<WidgetState> states) {
-                              return TextStyle(
-                                fontSize: buttonTextStyle.fontSize,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: buttonTextStyle.letterSpacing,
-                                shadows: [
-                                  Shadow(
-                                    offset: const Offset(0, 1),
-                                    blurRadius: 1,
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                          // アイコンのカラーを調整
-                          iconColor: WidgetStateProperty.all(Colors.white),
-                          // 背景色のカスタマイズ（押し込み効果）
-                          backgroundColor: WidgetStateProperty.resolveWith<Color?>(
-                            (Set<WidgetState> states) {
-                              if (states.contains(WidgetState.pressed)) {
-                                return isDarkMode 
-                                  ? Colors.blue.shade800 
-                                  : Color(0xFF0D47A1); // 押されたときに暗くなる
-                              }
-                              return isDarkMode 
-                                ? Colors.blue.shade600 
-                                : Color(0xFF1976D2); // 通常時
-                            },
+// カウンターボタン
+            Expanded(
+              flex: 3,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // 全体の画面幅を取得
+                  final screenWidth = MediaQuery.of(context).size.width;
+
+                  // 画面サイズに応じて幅の係数を変える
+                  // 大画面(600以上)なら80%、小画面なら100%
+                  final widthFactor = screenWidth >= 600 ? 0.8 : 1.0;
+
+                  return Center(
+                    child: FractionallySizedBox(
+                      widthFactor: widthFactor,
+                      child: Container(
+                        height: 40 * fontRatio, // 高さを画面サイズに合わせて可変に
+                        // ボタンの外側にシャドウを追加するコンテナ
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isDarkMode
+                                  ? Colors.blue.withOpacity(0.3)
+                                  : Colors.black.withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton.icon(
+                          onPressed: onIncrement,
+                          icon: Icon(Icons.add, size: buttonTextStyle.fontSize! + 1),
+                          label: Text('カウンター', style: buttonTextStyle),
+                          style: ElevatedButton.styleFrom(
+                            // フィードバック音だけを無効化（リップルは残る）
+                            enableFeedback: false,
+
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 4 * fontRatio,
+                              vertical: 0,
+                            ),
+                            minimumSize: Size(30 * fontRatio, 30 * fontRatio),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            elevation: 4, // 標準的なエレベーション
+                            backgroundColor: isDarkMode
+                                ? Colors.blue.shade600
+                                : const Color(0xFF1976D2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ).copyWith(
+                            // 押下時のオーバーレイカラー（リップルの色）などはそのままカスタマイズ可能
+                            overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                  (states) {
+                                if (states.contains(MaterialState.pressed)) {
+                                  return isDarkMode
+                                      ? Colors.blue.shade400.withOpacity(0.3)
+                                      : Colors.white.withOpacity(0.3);
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }
+                  );
+                },
+              ),
             ),
-          ),
-            const SizedBox(width: 15),
-            
+
+
             // リセットボタン
             SizedBox(
               width: 35 * fontRatio, // 幅を画面サイズに合わせて可変に
@@ -261,29 +238,37 @@ class PlayerRowWidget extends StatelessWidget {
               child: IconButton(
                 onPressed: onReset,
                 icon: Icon(Icons.refresh, size: buttonTextStyle.fontSize! + 2),
+                // フィードバック音だけを無効化（リップルは残る）
+                enableFeedback: false,
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(
-                    isDarkMode 
-                      ? Colors.grey.withOpacity(0.2) 
-                      : Colors.grey.withOpacity(0.1)
+                  backgroundColor: MaterialStateProperty.all(
+                    isDarkMode
+                        ? Colors.grey.withOpacity(0.2)
+                        : Colors.grey.withOpacity(0.1),
                   ),
-                  foregroundColor: WidgetStateProperty.all(
-                    isDarkMode ? Colors.white70 : Color(0xFF757575)
+                  foregroundColor: MaterialStateProperty.all(  // 誤記を修正
+                    isDarkMode ? Colors.white70 : const Color(0xFF757575),
                   ),
-                  padding: WidgetStateProperty.all(EdgeInsets.zero),
-                  minimumSize: WidgetStateProperty.all(Size(30 * fontRatio, 30 * fontRatio)),
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  minimumSize: MaterialStateProperty.all(
+                    Size(30 * fontRatio, 30 * fontRatio),
+                  ),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  )),
-                  elevation: WidgetStateProperty.all(2),
-                  shadowColor: WidgetStateProperty.all(Colors.black.withOpacity(0.3)),
-                  overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                    (Set<WidgetState> states) {
-                      if (states.contains(WidgetState.pressed)) {
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  elevation: MaterialStateProperty.all(2),
+                  shadowColor: MaterialStateProperty.all(
+                    Colors.black.withOpacity(0.3),
+                  ),
+                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                        (states) {
+                      if (states.contains(MaterialState.pressed)) {
                         return isDarkMode
-                          ? Colors.grey.withOpacity(0.4)
-                          : Colors.grey.withOpacity(0.2); // タップ時の色
+                            ? Colors.grey.withOpacity(0.4)
+                            : Colors.grey.withOpacity(0.2); // タップ時の色
                       }
                       return null;
                     },
@@ -291,6 +276,7 @@ class PlayerRowWidget extends StatelessWidget {
                 ),
               ),
             ),
+
             const SizedBox(width: 10),
           ] else ...[
             // 自家の場合はスペーサー

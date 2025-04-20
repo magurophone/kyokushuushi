@@ -253,7 +253,6 @@ class SettingsScreenState extends State<SettingsScreen> {
   void _showVolumeDialog() {
     // 現在の設定から初期値を取得
     double effectVolume = _settingsService.effectVolume;
-    double bgmVolume = _settingsService.bgmVolume;
     
     showDialog(
       context: context,
@@ -293,27 +292,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: 16),
               
-              // BGMの音量スライダー
-              Row(
-                children: [
-                  Icon(
-                    bgmVolume <= 0 ? Icons.music_off : Icons.music_note,
-                    color: bgmVolume <= 0 ? Colors.grey : Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(width: 12),
-                  const Text('BGM'),
-                ],
-              ),
-              Slider(
-                value: bgmVolume,
-                onChanged: (value) {
-                  setState(() {
-                    bgmVolume = value;
-                  });
-                },
-                divisions: 10,
-                label: '${(bgmVolume * 100).round()}%',
-              ),
+
             ],
           ),
           actions: [
@@ -325,7 +304,6 @@ class SettingsScreenState extends State<SettingsScreen> {
               onPressed: () async {
                 // 設定を保存
                 await _settingsService.setEffectVolume(effectVolume);
-                await _settingsService.setBgmVolume(bgmVolume);
                 
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(

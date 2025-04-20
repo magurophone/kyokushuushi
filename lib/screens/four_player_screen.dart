@@ -42,12 +42,12 @@ class FourPlayerScreenState extends State<FourPlayerScreen> with SingleTickerPro
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    
+
     _fadeAnimation = CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
     );
-    
+
     // アニメーション開始
     _animationController.forward();
     
@@ -240,6 +240,7 @@ void dispose() {
                               child: ElevatedButton.icon(
                                 onPressed: _resetAll,
                                 style: ElevatedButton.styleFrom(
+                                  enableFeedback: false,
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(vertical: 0),
                                   elevation: 8,
@@ -607,6 +608,7 @@ void dispose() {
                   ElevatedButton(
                     onPressed: closeDialog, // 閉じるボタンに関数を設定
                     style: ElevatedButton.styleFrom(
+                      enableFeedback: false,
                       foregroundColor: Colors.white,
                       backgroundColor: isDarkMode 
                         ? Colors.blue.withOpacity(0.7) 

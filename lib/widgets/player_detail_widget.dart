@@ -186,7 +186,7 @@ class PlayerDetailWidget extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // ヘルプボタン
+// ヘルプボタン
                         if (onHelpButtonTap != null)
                           IconButton(
                             icon: Icon(
@@ -195,8 +195,10 @@ class PlayerDetailWidget extends StatelessWidget {
                               size: 28,
                             ),
                             onPressed: onHelpButtonTap,
+                            enableFeedback: false,  // システムタップ音を無効化
+                            splashRadius: 24,       // リップルの大きさ（お好みで調整）
                           ),
-                        // 設定ボタン  
+// 設定ボタン
                         IconButton(
                           icon: Icon(
                             Icons.settings,
@@ -204,7 +206,10 @@ class PlayerDetailWidget extends StatelessWidget {
                             size: 28,
                           ),
                           onPressed: onSettingsTap,
+                          enableFeedback: false,  // システムタップ音を無効化
+                          splashRadius: 24,       // リップルの大きさ（お好みで調整）
                         ),
+
                       ],
                     ),
                   ),
@@ -315,6 +320,7 @@ class PlayerDetailWidget extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: InkWell(
                         onTap: () => showExplanationDialog('片スジ'),
+                        enableFeedback: false,
                         borderRadius: BorderRadius.circular(4),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
@@ -406,6 +412,7 @@ class PlayerDetailWidget extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: InkWell(
                         onTap: () => showExplanationDialog('両無スジ'),
+                        enableFeedback: false,
                         borderRadius: BorderRadius.circular(4),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
@@ -457,6 +464,7 @@ class PlayerDetailWidget extends StatelessWidget {
     return Expanded(
       child: InkWell( // InkWellを追加して、タップ可能に
         onTap: () => showExplanationDialog(label),
+        enableFeedback: false,
         borderRadius: BorderRadius.circular(4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -503,6 +511,7 @@ class PlayerDetailWidget extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: () => showExplanationDialog(label, area: area),
+        enableFeedback: false,
         borderRadius: BorderRadius.circular(4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
